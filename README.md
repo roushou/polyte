@@ -2,6 +2,8 @@
 
 Rust client for Polymarket APIs.
 
+More information about this crate can be found in the [crate documentation](https://docs.rs/polyte/).
+
 ## Installation
 
 ```

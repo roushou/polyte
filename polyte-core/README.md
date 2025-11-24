@@ -9,6 +9,8 @@ This crate provides common functionality used by both `polyte-clob` and `polyte-
 - Request building utilities
 - Query parameter handling
 
+More information about this crate can be found in the [crate documentation](https://docs.rs/polyte-core/).
+
 ## Usage
 
 This crate is typically used as a dependency by other Polyte crates and not directly by end users. If you want to interact with Polymarket APIs, use the main [`polyte`](https://crates.io/crates/polyte) crate instead.

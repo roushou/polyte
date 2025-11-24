@@ -4,6 +4,8 @@ Rust client library for Polymarket Gamma (market data) API.
 
 The Gamma API provides read-only access to Polymarket's market data, including markets, events, series, tags, and sports metadata.
 
+More information about this crate can be found in the [crate documentation](https://docs.rs/polyte-gamma/).
+
 ## Features
 
 - **Type-Safe API**: Strongly-typed responses with serde deserialization

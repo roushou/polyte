@@ -4,6 +4,8 @@ Rust client library for Polymarket CLOB (Central Limit Order Book) API.
 
 The CLOB API enables trading operations on Polymarket, including order creation, signing, posting, and account management.
 
+More information about this crate can be found in the [crate documentation](https://docs.rs/polyte-clob/).
+
 ## Features
 
 - **EIP-712 Order Signing**: Ethereum-standard order signing for security
