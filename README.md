@@ -25,11 +25,19 @@ cargo add polyte --no-default-features --features clob
 
 ### CLI
 
+Install using cargo
+
 ```
 cargo install polyte-cli
 ```
 
-See more [here](./polyte-cli/README.md).
+Or download binaries directly from Github releases
+
+```
+curl -fsSL https://raw.githubusercontent.com/roushou/polyte/main/scripts/install.sh | sh
+```
+
+See more information [here](./polyte-cli/README.md).
 
 ## Usage
 

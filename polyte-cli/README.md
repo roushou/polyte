@@ -7,8 +7,16 @@ CLI tool for querying Polymarket APIs.
 
 ## Installation
 
+Install using cargo
+
 ```bash
 cargo install polyte-cli
+```
+
+Or download binaries directly from Github releases
+
+```
+curl -fsSL https://raw.githubusercontent.com/roushou/polyte/main/scripts/install.sh | sh
 ```
 
 ## Usage
