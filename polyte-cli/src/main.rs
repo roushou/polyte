@@ -5,7 +5,7 @@ mod commands;
 
 #[derive(Parser)]
 #[command(name = "polyte")]
-#[command(about = "CLI tool for querying Polymarket APIs", long_about = None)]
+#[command(version, about = "CLI tool for querying Polymarket APIs", long_about = None)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
