@@ -16,7 +16,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Get all sports metadata
     println!("Fetching sports metadata...");
-    match gamma.sport().list().send().await {
+    match gamma.sports().list().send().await {
         Ok(sports) => {
             println!("Found {} sports\n", sports.len());
 
@@ -47,7 +47,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Example 1: List all teams
     println!("\n=== Team Listing Examples ===\n");
     println!("1. Listing all teams (limited to 10)...");
-    match gamma.sport().list_teams().limit(10).send().await {
+    match gamma.sports().list_teams().limit(10).send().await {
         Ok(teams) => {
             println!("   Found {} teams\n", teams.len());
             for team in teams.iter().take(5) {
@@ -73,7 +73,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Example 2: Filter teams by league
     println!("2. Filtering teams by league (NFL)...");
     match gamma
-        .sport()
+        .sports()
         .list_teams()
         .league(vec!["NFL"])
         .limit(10)
@@ -99,7 +99,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Example 3: Filter by team name
     println!("3. Searching for specific team names...");
     match gamma
-        .sport()
+        .sports()
         .list_teams()
         .name(vec!["Lakers", "Warriors"])
         .send()
@@ -123,7 +123,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Example 4: Filter by abbreviation
     println!("4. Filtering by team abbreviations...");
     match gamma
-        .sport()
+        .sports()
         .list_teams()
         .abbreviation(vec!["LAL", "GSW"])
         .send()
@@ -148,7 +148,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Example 5: Ordering and pagination
     println!("5. Ordering teams with pagination...");
     match gamma
-        .sport()
+        .sports()
         .list_teams()
         .order("name")
         .ascending(true)
@@ -172,7 +172,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Example 6: Multiple leagues
     println!("6. Filtering by multiple leagues...");
     match gamma
-        .sport()
+        .sports()
         .list_teams()
         .league(vec!["NFL", "NBA"])
         .limit(20)

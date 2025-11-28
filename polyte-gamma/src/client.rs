@@ -65,8 +65,8 @@ impl Gamma {
         }
     }
 
-    /// Get sport namespace
-    pub fn sport(&self) -> Sports {
+    /// Get sports namespace
+    pub fn sports(&self) -> Sports {
         Sports {
             client: self.client.clone(),
             base_url: self.base_url.clone(),

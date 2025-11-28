@@ -40,7 +40,7 @@ impl SportsCommand {
     pub async fn run(self, gamma: &Gamma) -> Result<()> {
         match self {
             Self::List => {
-                let sports = gamma.sport().list().send().await?;
+                let sports = gamma.sports().list().send().await?;
                 println!("{}", serde_json::to_string_pretty(&sports)?);
             }
             Self::Teams {
@@ -50,7 +50,7 @@ impl SportsCommand {
                 order,
                 league,
             } => {
-                let mut request = gamma.sport().list_teams();
+                let mut request = gamma.sports().list_teams();
 
                 request = request.limit(limit);
                 request = request.offset(offset);
