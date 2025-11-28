@@ -23,6 +23,15 @@ impl Markets {
         )
     }
 
+    /// Get a market by its slug
+    pub fn get_by_slug(&self, slug: impl Into<String>) -> Request<Market> {
+        Request::new(
+            self.client.clone(),
+            self.base_url.clone(),
+            format!("/markets/slug/{}", urlencoding::encode(&slug.into())),
+        )
+    }
+
     /// List markets with optional filtering
     pub fn list(&self) -> ListMarkets {
         ListMarkets {

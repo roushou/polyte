@@ -77,10 +77,15 @@ pub enum MarketsCommand {
         #[arg(long)]
         order: Option<String>,
     },
-    /// Get a market by condition ID
+    /// Get a market by ID
     Get {
-        /// Market condition ID
+        /// Market ID
         id: String,
+    },
+    /// Get a market by slug
+    GetBySlug {
+        /// Market slug
+        slug: String,
     },
 }
 
@@ -163,6 +168,10 @@ impl MarketsCommand {
             }
             Self::Get { id } => {
                 let market = gamma.markets().get(&id).send().await?;
+                println!("{}", serde_json::to_string_pretty(&market)?);
+            }
+            Self::GetBySlug { slug } => {
+                let market = gamma.markets().get_by_slug(&slug).send().await?;
                 println!("{}", serde_json::to_string_pretty(&market)?);
             }
         }
