@@ -1,29 +1,43 @@
-use clap::{ArgAction, Subcommand};
+use clap::{Subcommand, ValueEnum};
 use color_eyre::eyre::Result;
 use polyte_gamma::Gamma;
+
+/// Series status filter
+#[derive(Debug, Clone, Copy, ValueEnum, Default)]
+pub enum SeriesStatus {
+    /// Open series
+    #[default]
+    Open,
+    /// Closed series
+    Closed,
+}
+
+/// Sort order
+#[derive(Debug, Clone, Copy, ValueEnum, Default)]
+pub enum SortOrder {
+    /// Ascending order
+    Asc,
+    /// Descending order
+    #[default]
+    Desc,
+}
 
 #[derive(Subcommand)]
 pub enum SeriesCommand {
     /// List series
     List {
         /// Maximum number of results
-        #[arg(short, long)]
-        limit: Option<u32>,
+        #[arg(short, long, default_value = "20")]
+        limit: u32,
         /// Pagination offset
-        #[arg(short, long)]
-        offset: Option<u32>,
-        /// Sort in ascending order
-        #[arg(long, action = ArgAction::SetTrue, conflicts_with = "desc")]
-        asc: bool,
-        /// Sort in descending order
-        #[arg(long, action = ArgAction::SetTrue)]
-        desc: bool,
-        /// Show only closed series
-        #[arg(long, action = ArgAction::SetTrue, conflicts_with = "open")]
-        closed: bool,
-        /// Show only open series
-        #[arg(long, action = ArgAction::SetTrue)]
-        open: bool,
+        #[arg(short, long, default_value = "0")]
+        offset: u32,
+        /// Sort order
+        #[arg(long, value_enum, default_value = "desc")]
+        sort: SortOrder,
+        /// Filter by status (open, closed)
+        #[arg(long, value_enum, default_value = "open")]
+        status: SeriesStatus,
     },
     /// Get a series by ID
     Get {
@@ -38,28 +52,21 @@ impl SeriesCommand {
             Self::List {
                 limit,
                 offset,
-                asc,
-                desc,
-                closed,
-                open,
+                sort,
+                status,
             } => {
                 let mut request = gamma.series().list();
 
-                if let Some(l) = limit {
-                    request = request.limit(l);
-                }
-                if let Some(o) = offset {
-                    request = request.offset(o);
-                }
-                if asc {
-                    request = request.ascending(true);
-                } else if desc {
-                    request = request.ascending(false);
-                }
-                if closed {
-                    request = request.closed(true);
-                } else if open {
-                    request = request.closed(false);
+                request = request.limit(limit);
+                request = request.offset(offset);
+                request = request.ascending(matches!(sort, SortOrder::Asc));
+                match status {
+                    SeriesStatus::Open => {
+                        request = request.closed(false);
+                    }
+                    SeriesStatus::Closed => {
+                        request = request.closed(true);
+                    }
                 }
 
                 let series = request.send().await?;

@@ -1,26 +1,57 @@
-use clap::Subcommand;
+use clap::{Subcommand, ValueEnum};
 use color_eyre::eyre::Result;
 use polyte_gamma::Gamma;
+
+/// Sort order
+#[derive(Debug, Clone, Copy, ValueEnum, Default)]
+pub enum SortOrder {
+    /// Ascending order
+    Asc,
+    /// Descending order
+    #[default]
+    Desc,
+}
+
+/// Parent entity type for comments
+#[derive(Debug, Clone, Copy, ValueEnum)]
+pub enum ParentEntityType {
+    /// Event comments
+    Event,
+    /// Series comments
+    Series,
+    /// Market comments
+    Market,
+}
+
+impl ParentEntityType {
+    fn as_str(&self) -> &'static str {
+        match self {
+            Self::Event => "Event",
+            Self::Series => "Series",
+            Self::Market => "market",
+        }
+    }
+}
 
 #[derive(Subcommand)]
 pub enum CommentsCommand {
     /// List comments
     List {
         /// Maximum number of results
-        #[arg(short, long)]
-        limit: Option<u32>,
+        #[arg(short, long, default_value = "20")]
+        limit: u32,
         /// Pagination offset
-        #[arg(short, long)]
-        offset: Option<u32>,
-        /// Sort in ascending order
-        #[arg(long)]
-        ascending: Option<bool>,
+        #[arg(short, long, default_value = "0")]
+        offset: u32,
+        /// Sort order
+        #[arg(long, value_enum, default_value = "desc")]
+        sort: SortOrder,
         /// Order by field
         #[arg(long)]
         order: Option<String>,
-        /// Filter by parent entity type (Event, Series, market)
-        #[arg(long)]
-        parent_entity_type: Option<String>,
+        /// Filter by parent entity type
+        #[arg(long, value_enum)]
+        parent_entity_type: Option<ParentEntityType>,
         /// Filter by parent entity ID
         #[arg(long)]
         parent_entity_id: Option<i64>,
@@ -39,7 +70,7 @@ impl CommentsCommand {
             Self::List {
                 limit,
                 offset,
-                ascending,
+                sort,
                 order,
                 parent_entity_type,
                 parent_entity_id,
@@ -48,20 +79,14 @@ impl CommentsCommand {
             } => {
                 let mut request = gamma.comments().list();
 
-                if let Some(l) = limit {
-                    request = request.limit(l);
-                }
-                if let Some(o) = offset {
-                    request = request.offset(o);
-                }
-                if let Some(asc) = ascending {
-                    request = request.ascending(asc);
-                }
+                request = request.limit(limit);
+                request = request.offset(offset);
+                request = request.ascending(matches!(sort, SortOrder::Asc));
                 if let Some(ord) = order {
                     request = request.order(ord);
                 }
                 if let Some(pet) = parent_entity_type {
-                    request = request.parent_entity_type(pet);
+                    request = request.parent_entity_type(pet.as_str());
                 }
                 if let Some(pei) = parent_entity_id {
                     request = request.parent_entity_id(pei);

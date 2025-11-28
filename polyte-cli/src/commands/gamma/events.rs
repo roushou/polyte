@@ -1,35 +1,45 @@
-use clap::{ArgAction, Subcommand};
+use clap::{ArgAction, Subcommand, ValueEnum};
 use color_eyre::eyre::Result;
 use polyte_gamma::Gamma;
+
+/// Event status filter
+#[derive(Debug, Clone, Copy, ValueEnum, Default)]
+pub enum EventStatus {
+    /// Open events (not closed, not archived)
+    #[default]
+    Open,
+    /// Closed events
+    Closed,
+    /// Archived events
+    Archived,
+}
+
+/// Sort order
+#[derive(Debug, Clone, Copy, ValueEnum, Default)]
+pub enum SortOrder {
+    /// Ascending order
+    Asc,
+    /// Descending order
+    #[default]
+    Desc,
+}
 
 #[derive(Subcommand)]
 pub enum EventsCommand {
     /// List events
     List {
         /// Maximum number of results
-        #[arg(short, long)]
-        limit: Option<u32>,
+        #[arg(short, long, default_value = "20")]
+        limit: u32,
         /// Pagination offset
-        #[arg(short, long)]
-        offset: Option<u32>,
-        /// Show only active events
-        #[arg(long, action = ArgAction::SetTrue, conflicts_with = "inactive")]
+        #[arg(short, long, default_value = "0")]
+        offset: u32,
+        /// Filter by active status
+        #[arg(long, default_value = "true")]
         active: bool,
-        /// Show only inactive events
-        #[arg(long, action = ArgAction::SetTrue)]
-        inactive: bool,
-        /// Show only closed events
-        #[arg(long, action = ArgAction::SetTrue, conflicts_with = "open")]
-        closed: bool,
-        /// Show only open events
-        #[arg(long, action = ArgAction::SetTrue)]
-        open: bool,
-        /// Show only archived events
-        #[arg(long, action = ArgAction::SetTrue, conflicts_with = "not_archived")]
-        archived: bool,
-        /// Exclude archived events
-        #[arg(long, action = ArgAction::SetTrue)]
-        not_archived: bool,
+        /// Filter by status (open, closed, archived)
+        #[arg(short, long, value_enum, default_value = "open")]
+        status: EventStatus,
         /// Show only featured events
         #[arg(long, action = ArgAction::SetTrue, conflicts_with = "not_featured")]
         featured: bool,
@@ -48,15 +58,12 @@ pub enum EventsCommand {
         /// Maximum volume
         #[arg(long)]
         volume_max: Option<f64>,
-        /// Sort in ascending order
-        #[arg(long, action = ArgAction::SetTrue, conflicts_with = "desc")]
-        asc: bool,
-        /// Sort in descending order
-        #[arg(long, action = ArgAction::SetTrue)]
-        desc: bool,
+        /// Sort order
+        #[arg(long, value_enum, default_value = "desc")]
+        sort: SortOrder,
         /// Order by field
-        #[arg(long)]
-        order: Option<String>,
+        #[arg(long, default_value = "startDate")]
+        order: String,
     },
     /// Get an event by ID
     Get {
@@ -82,43 +89,32 @@ impl EventsCommand {
                 limit,
                 offset,
                 active,
-                inactive,
-                closed,
-                open,
-                archived,
-                not_archived,
+                status,
                 featured,
                 not_featured,
                 liquidity_min,
                 liquidity_max,
                 volume_min,
                 volume_max,
-                asc,
-                desc,
+                sort,
                 order,
             } => {
                 let mut request = gamma.events().list();
 
-                if let Some(l) = limit {
-                    request = request.limit(l);
-                }
-                if let Some(o) = offset {
-                    request = request.offset(o);
-                }
-                if active {
-                    request = request.active(true);
-                } else if inactive {
-                    request = request.active(false);
-                }
-                if closed {
-                    request = request.closed(true);
-                } else if open {
-                    request = request.closed(false);
-                }
-                if archived {
-                    request = request.archived(true);
-                } else if not_archived {
-                    request = request.archived(false);
+                request = request.limit(limit);
+                request = request.offset(offset);
+                request = request.order(&order);
+                request = request.active(active);
+                match status {
+                    EventStatus::Open => {
+                        request = request.closed(false).archived(false);
+                    }
+                    EventStatus::Closed => {
+                        request = request.closed(true);
+                    }
+                    EventStatus::Archived => {
+                        request = request.archived(true);
+                    }
                 }
                 if featured {
                     request = request.featured(true);
@@ -137,14 +133,7 @@ impl EventsCommand {
                 if let Some(max) = volume_max {
                     request = request.volume_max(max);
                 }
-                if asc {
-                    request = request.ascending(true);
-                } else if desc {
-                    request = request.ascending(false);
-                }
-                if let Some(ord) = order {
-                    request = request.order(ord);
-                }
+                request = request.ascending(matches!(sort, SortOrder::Asc));
 
                 let events = request.send().await?;
                 println!("{}", serde_json::to_string_pretty(&events)?);

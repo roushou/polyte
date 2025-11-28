@@ -1,20 +1,30 @@
-use clap::Subcommand;
+use clap::{Subcommand, ValueEnum};
 use color_eyre::eyre::Result;
 use polyte_gamma::Gamma;
+
+/// Sort order
+#[derive(Debug, Clone, Copy, ValueEnum, Default)]
+pub enum SortOrder {
+    /// Ascending order
+    Asc,
+    /// Descending order
+    #[default]
+    Desc,
+}
 
 #[derive(Subcommand)]
 pub enum TagsCommand {
     /// List tags
     List {
         /// Maximum number of results
-        #[arg(short, long)]
-        limit: Option<u32>,
+        #[arg(short, long, default_value = "20")]
+        limit: u32,
         /// Pagination offset
-        #[arg(short, long)]
-        offset: Option<u32>,
-        /// Sort in ascending order
-        #[arg(long)]
-        ascending: Option<bool>,
+        #[arg(short, long, default_value = "0")]
+        offset: u32,
+        /// Sort order
+        #[arg(long, value_enum, default_value = "desc")]
+        sort: SortOrder,
         /// Order by field
         #[arg(long)]
         order: Option<String>,
@@ -50,21 +60,15 @@ impl TagsCommand {
             Self::List {
                 limit,
                 offset,
-                ascending,
+                sort,
                 order,
                 is_carousel,
             } => {
                 let mut request = gamma.tags().list();
 
-                if let Some(l) = limit {
-                    request = request.limit(l);
-                }
-                if let Some(o) = offset {
-                    request = request.offset(o);
-                }
-                if let Some(asc) = ascending {
-                    request = request.ascending(asc);
-                }
+                request = request.limit(limit);
+                request = request.offset(offset);
+                request = request.ascending(matches!(sort, SortOrder::Asc));
                 if let Some(ord) = order {
                     request = request.order(ord);
                 }
