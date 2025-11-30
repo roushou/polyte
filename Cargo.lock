@@ -2617,9 +2617,10 @@ dependencies = [
 
 [[package]]
 name = "polyte"
-version = "0.1.6"
+version = "0.2.0"
 dependencies = [
  "polyte-clob",
+ "polyte-data",
  "polyte-gamma",
  "thiserror",
  "tokio",
@@ -2627,12 +2628,13 @@ dependencies = [
 
 [[package]]
 name = "polyte-cli"
-version = "0.1.5"
+version = "0.2.0"
 dependencies = [
  "clap",
  "clap_complete",
  "color-eyre",
  "eyre",
+ "polyte-data",
  "polyte-gamma",
  "serde_json",
  "tokio",
@@ -2670,6 +2672,20 @@ dependencies = [
  "serde",
  "serde_json",
  "thiserror",
+ "url",
+]
+
+[[package]]
+name = "polyte-data"
+version = "0.1.0"
+dependencies = [
+ "polyte-core",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+ "tracing",
  "url",
 ]
 

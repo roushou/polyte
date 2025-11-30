@@ -18,6 +18,9 @@ cargo add polyte --no-default-features --features gamma
 
 # Trading only
 cargo add polyte --no-default-features --features clob
+
+# Data API only
+cargo add polyte --no-default-features --features data
 ```
 
 ## Usage

@@ -1,10 +1,10 @@
 //! # polyte
 //!
-//! Unified Rust client for Polymarket APIs, combining both CLOB (trading) and Gamma (market data) APIs.
+//! Unified Rust client for Polymarket APIs, combining CLOB (trading), Gamma (market data), and Data APIs.
 //!
 //! ## Features
 //!
-//! - Unified access to both CLOB and Gamma APIs
+//! - Unified access to CLOB, Gamma, and Data APIs
 //! - Type-safe API with idiomatic Rust patterns
 //! - EIP-712 order signing and HMAC authentication
 //! - Comprehensive market data and trading operations
@@ -65,16 +65,21 @@ use polyte_gamma::Gamma;
 
 #[cfg(feature = "clob")]
 pub use polyte_clob;
+#[cfg(feature = "data")]
+pub use polyte_data;
 #[cfg(feature = "gamma")]
 pub use polyte_gamma;
 
 /// Prelude module for convenient imports
 pub mod prelude {
-    #[cfg(all(feature = "clob", feature = "gamma"))]
+    #[cfg(all(feature = "clob", feature = "gamma", feature = "data"))]
     pub use crate::{Polymarket, PolymarketBuilder, PolymarketError};
 
     #[cfg(feature = "clob")]
     pub use polyte_clob::{Chain, Clob, ClobError, CreateOrderParams, Credentials, OrderSide};
+
+    #[cfg(feature = "data")]
+    pub use polyte_data::{DataApi, DataApiError};
 
     #[cfg(feature = "gamma")]
     pub use polyte_gamma::{Gamma, GammaError};
@@ -87,6 +92,11 @@ pub enum PolymarketError {
     #[cfg(feature = "clob")]
     #[error("CLOB error: {0}")]
     Clob(#[from] polyte_clob::ClobError),
+
+    /// Data API error
+    #[cfg(feature = "data")]
+    #[error("Data error: {0}")]
+    Data(#[from] polyte_data::DataApiError),
 
     /// Gamma API error
     #[cfg(feature = "gamma")]

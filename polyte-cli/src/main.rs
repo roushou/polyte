@@ -13,6 +13,11 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// Query Data API (user positions)
+    Data {
+        #[command(subcommand)]
+        command: commands::DataCommand,
+    },
     /// Query Gamma API (market data)
     Gamma {
         #[command(subcommand)]
@@ -29,6 +34,7 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
+        Commands::Data { command } => command.run().await?,
         Commands::Gamma { command } => command.run().await?,
         Commands::Completions(cmd) => cmd.run::<Cli>(),
     }

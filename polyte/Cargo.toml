@@ -6,19 +6,21 @@ license.workspace = true
 authors.workspace = true
 repository.workspace = true
 rust-version.workspace = true
-description = "Unified Rust client for Polymarket APIs (CLOB + Gamma)"
+description = "Unified Rust client for Polymarket APIs (CLOB, Gamma and Data)"
 keywords = ["polymarket", "prediction-markets", "api", "trading"]
 categories = ["api-bindings", "web-programming::http-client"]
 
 [features]
-default = ["clob", "gamma"]
+default = ["clob", "gamma", "data"]
 clob = ["dep:polyte-clob"]
 gamma = ["dep:polyte-gamma"]
-full = ["clob", "gamma"]
+data = ["dep:polyte-data"]
+full = ["clob", "gamma", "data"]
 
 [dependencies]
 polyte-gamma = { path = "../polyte-gamma", version = "0.1.6", optional = true }
 polyte-clob = { path = "../polyte-clob", version = "0.1.6", optional = true }
+polyte-data = { path = "../polyte-data", version = "0.1.0", optional = true }
 thiserror = { workspace = true }
 
 [dev-dependencies]
