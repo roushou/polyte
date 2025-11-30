@@ -80,30 +80,6 @@ impl ListComments {
         self
     }
 
-    /// Filter by market ID (deprecated - use parent_entity_id with parent_entity_type=market)
-    pub fn market_id(mut self, id: impl Into<String>) -> Self {
-        self.request = self.request.query("market_id", id.into());
-        self
-    }
-
-    /// Filter by event ID (deprecated - use parent_entity_id with parent_entity_type=Event)
-    pub fn event_id(mut self, id: impl Into<String>) -> Self {
-        self.request = self.request.query("event_id", id.into());
-        self
-    }
-
-    /// Filter by series ID (deprecated - use parent_entity_id with parent_entity_type=Series)
-    pub fn series_id(mut self, id: impl Into<String>) -> Self {
-        self.request = self.request.query("series_id", id.into());
-        self
-    }
-
-    /// Filter by parent comment ID
-    pub fn parent_id(mut self, id: impl Into<String>) -> Self {
-        self.request = self.request.query("parent_id", id.into());
-        self
-    }
-
     /// Execute the request
     pub async fn send(self) -> crate::error::Result<Vec<Comment>> {
         self.request.send().await
