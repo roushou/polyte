@@ -34,7 +34,8 @@ pub struct Market {
     pub neg_risk: Option<bool>,
     pub neg_risk_market_id: Option<String>,
     pub neg_risk_request_id: Option<String>,
-    pub comment_count: Option<u32>,
+    // Use i64 instead of u64 to prevent sentinel value
+    pub comment_count: Option<i64>,
     pub twitter_card_image: Option<String>,
     pub resolution_source: Option<String>,
     pub amm_type: Option<String>,
@@ -185,7 +186,8 @@ pub struct Event {
     pub liquidity: Option<f64>,
     pub volume: Option<f64>,
     pub volume_24hr: Option<f64>,
-    pub comment_count: Option<u32>,
+    // Use i64 instead of u64 to prevent sentinel value
+    pub comment_count: Option<i64>,
     #[serde(default)]
     pub markets: Vec<Market>,
     pub cyom: Option<bool>,
