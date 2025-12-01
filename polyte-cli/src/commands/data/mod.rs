@@ -1,4 +1,5 @@
 mod activity;
+mod builders;
 mod holders;
 mod live_volume;
 mod open_interest;
@@ -21,6 +22,11 @@ pub enum DataCommand {
     Health,
     /// Query user activity
     Activity(UserActivityCommand),
+    /// Query builder leaderboard and volume
+    Builders {
+        #[command(subcommand)]
+        command: builders::BuildersCommand,
+    },
     /// Query top holders for markets
     Holders(HoldersCommand),
     /// Query trades
@@ -49,6 +55,7 @@ impl DataCommand {
                 Ok(())
             }
             Self::Activity(cmd) => cmd.run(&data).await,
+            Self::Builders { command } => command.run(&data).await,
             Self::Holders(cmd) => cmd.run(&data).await,
             Self::Trades { command } => command.run(&data).await,
             Self::Traded(cmd) => cmd.run(&data).await,

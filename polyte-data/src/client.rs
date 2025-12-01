@@ -5,6 +5,7 @@ use url::Url;
 
 use crate::{
     api::{
+        builders::BuildersApi,
         health::Health,
         holders::Holders,
         live_volume::LiveVolumeApi,
@@ -93,6 +94,14 @@ impl DataApi {
     /// Get live volume namespace
     pub fn live_volume(&self) -> LiveVolumeApi {
         LiveVolumeApi {
+            client: self.client.clone(),
+            base_url: self.base_url.clone(),
+        }
+    }
+
+    /// Get builders namespace
+    pub fn builders(&self) -> BuildersApi {
+        BuildersApi {
             client: self.client.clone(),
             base_url: self.base_url.clone(),
         }

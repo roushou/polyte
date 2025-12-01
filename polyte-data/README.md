@@ -95,6 +95,39 @@ let volume = data.live_volume()
 println!("Live volume: {}", volume.volume);
 ```
 
+### Get Builder Leaderboard
+
+```rust
+use polyte_data::api::builders::TimePeriod;
+
+let rankings = data.builders()
+    .leaderboard()
+    .time_period(TimePeriod::Week)
+    .limit(10)
+    .send()
+    .await?;
+
+for ranking in rankings {
+    println!("#{} {} - volume: {}", ranking.rank, ranking.builder, ranking.volume);
+}
+```
+
+### Get Builder Volume Time Series
+
+```rust
+use polyte_data::api::builders::TimePeriod;
+
+let volumes = data.builders()
+    .volume()
+    .time_period(TimePeriod::Month)
+    .send()
+    .await?;
+
+for entry in volumes {
+    println!("{}: {} - {}", entry.dt, entry.builder, entry.volume);
+}
+```
+
 ## API Coverage
 
 - **Users**: User positions and traded markets
@@ -102,6 +135,7 @@ println!("Live volume: {}", volume.volume);
 - **Holders**: Token holder information
 - **Open Interest**: Market open interest data
 - **Live Volume**: Real-time trading volume
+- **Builders**: Builder leaderboard and volume time series
 - **Health**: API health checks
 
 ## License
