@@ -5,6 +5,17 @@ Rust SDK toolkit for Polymarket APIs. It includes library crates for use in your
 > [!WARNING]
 > This is currently work-in-progress so the API may change and some features may be missing
 
+## Crates
+
+| Crate | Description |
+|-------|-------------|
+| [polyte](./polyte) | Unified client for Polymarket APIs (CLOB, Gamma, Data) |
+| [polyte-cli](./polyte-cli) | CLI tool for querying Polymarket APIs |
+| [polyte-clob](./polyte-clob) | Client library for Polymarket CLOB (order book) API |
+| [polyte-core](./polyte-core) | Core utilities and shared types |
+| [polyte-data](./polyte-data) | Client library for Polymarket Data API |
+| [polyte-gamma](./polyte-gamma) | Client library for Polymarket Gamma (market data) API |
+
 ## Installation
 
 ### Libraries
