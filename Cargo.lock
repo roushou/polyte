@@ -2617,7 +2617,7 @@ dependencies = [
 
 [[package]]
 name = "polyte"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "polyte-clob",
  "polyte-data",
@@ -2628,7 +2628,7 @@ dependencies = [
 
 [[package]]
 name = "polyte-cli"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "clap",
  "clap_complete",
@@ -2692,7 +2692,7 @@ dependencies = [
 
 [[package]]
 name = "polyte-gamma"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "chrono",
  "polyte-core",
