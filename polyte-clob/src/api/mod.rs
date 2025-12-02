@@ -4,6 +4,6 @@ pub mod account;
 pub mod markets;
 pub mod orders;
 
-pub use account::Account;
+pub use account::AccountApi;
 pub use markets::Markets;
 pub use orders::{CancelOrderRequest, Orders};

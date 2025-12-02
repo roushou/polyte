@@ -13,21 +13,15 @@
 //! ## Example
 //!
 //! ```no_run
-//! use polyte_clob::{Chain, Clob, CreateOrderParams, OrderSide, Wallet, Credentials};
+//! use polyte_clob::{Account, Chain, ClobBuilder, CreateOrderParams, OrderSide};
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
-//!     let private_key = "0x..."; // Load this from environment variables
-//!
-//!     // Set up credentials (from API)
-//!     let credentials = Credentials {
-//!         key: "<api_key>".to_string(),
-//!         secret: "<secret>".to_string(),
-//!         passphrase: "<passphrase>".to_string(),
-//!     };
+//!     // Load account from environment variables
+//!     let account = Account::from_env()?;
 //!
 //!     // Create CLOB client
-//!     let clob = Clob::builder(private_key, credentials)?
+//!     let clob = ClobBuilder::new(account)
 //!         .chain(Chain::PolygonMainnet)
 //!         .build()?;
 //!
@@ -47,16 +41,16 @@
 //! }
 //! ```
 
+pub mod account;
 pub mod api;
 pub mod client;
 pub mod core;
 pub mod error;
 pub mod request;
-pub mod signer;
 pub mod types;
 pub mod utils;
-pub mod wallet;
 
+pub use account::{Account, AccountConfig, Credentials, Signer, Wallet};
 pub use api::account::{BalanceAllowanceResponse, Trade};
 pub use api::markets::{
     ListMarketsResponse, Market, MarketToken, MidpointResponse, OrderBook, OrderLevel,
@@ -66,5 +60,4 @@ pub use api::orders::{CancelResponse, OpenOrder, OrderResponse};
 pub use client::{Clob, ClobBuilder, CreateOrderParams};
 pub use core::chain::{Chain, Contracts};
 pub use error::{ClobError, Result};
-pub use types::{Credentials, Order, OrderSide, SignatureType, SignedOrder, TickSize};
-pub use wallet::Wallet;
+pub use types::{Order, OrderKind, OrderSide, SignatureType, SignedOrder, TickSize};

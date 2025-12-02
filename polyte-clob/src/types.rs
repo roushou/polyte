@@ -3,24 +3,6 @@ use std::fmt;
 use alloy::primitives::Address;
 use serde::{Deserialize, Serialize};
 
-/// API credentials for L2 authentication
-#[derive(Clone, Serialize, Deserialize)]
-pub struct Credentials {
-    pub key: String,
-    pub secret: String,
-    pub passphrase: String,
-}
-
-impl fmt::Debug for Credentials {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Credentials")
-            .field("key", &"<redacted>")
-            .field("secret", &"<redacted>")
-            .field("passphrase", &"<redacted>")
-            .finish()
-    }
-}
-
 /// Order side (buy or sell)
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "UPPERCASE")]

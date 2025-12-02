@@ -4,14 +4,13 @@ use reqwest::Client;
 use url::Url;
 
 use crate::{
-    api::{orders::OrderResponse, Account, Markets, Orders},
-    core::{chain::Chain, eip712::sign_order},
+    account::{Account, Credentials},
+    api::{account::AccountApi, orders::OrderResponse, Markets, Orders},
+    core::chain::Chain,
     error::{ClobError, Result},
     request::{AuthMode, Request},
-    signer::Signer,
     types::*,
     utils::{calculate_order_amounts, current_timestamp, generate_salt},
-    wallet::Wallet,
 };
 
 const DEFAULT_BASE_URL: &str = "https://clob.polymarket.com";
@@ -23,9 +22,7 @@ pub struct Clob {
     pub(crate) client: Client,
     pub(crate) base_url: Url,
     pub(crate) chain_id: u64,
-    pub(crate) wallet: Wallet,
-    pub(crate) credentials: Credentials,
-    pub(crate) signer: Signer,
+    pub(crate) account: Account,
 }
 
 impl Clob {
@@ -39,8 +36,18 @@ impl Clob {
         private_key: impl Into<String>,
         credentials: Credentials,
     ) -> Result<ClobBuilder> {
-        let wallet = Wallet::from_private_key(&private_key.into())?;
-        Ok(ClobBuilder::new(wallet, credentials))
+        let account = Account::new(private_key, credentials)?;
+        Ok(ClobBuilder::new(account))
+    }
+
+    /// Create a new CLOB client from an Account
+    pub fn from_account(account: Account) -> Result<Self> {
+        ClobBuilder::new(account).build()
+    }
+
+    /// Get a reference to the account
+    pub fn account(&self) -> &Account {
+        &self.account
     }
 
     /// Get markets namespace
@@ -57,21 +64,21 @@ impl Clob {
         Orders {
             client: self.client.clone(),
             base_url: self.base_url.clone(),
-            wallet: self.wallet.clone(),
-            credentials: self.credentials.clone(),
-            signer: self.signer.clone(),
+            wallet: self.account.wallet().clone(),
+            credentials: self.account.credentials().clone(),
+            signer: self.account.signer().clone(),
             chain_id: self.chain_id,
         }
     }
 
-    /// Get account namespace
-    pub fn account(&self) -> Account {
-        Account {
+    /// Get account API namespace
+    pub fn account_api(&self) -> AccountApi {
+        AccountApi {
             client: self.client.clone(),
             base_url: self.base_url.clone(),
-            wallet: self.wallet.clone(),
-            credentials: self.credentials.clone(),
-            signer: self.signer.clone(),
+            wallet: self.account.wallet().clone(),
+            credentials: self.account.credentials().clone(),
+            signer: self.account.signer().clone(),
             chain_id: self.chain_id,
         }
     }
@@ -104,8 +111,8 @@ impl Clob {
 
         Ok(Order {
             salt: generate_salt(),
-            maker: self.wallet.address(),
-            signer: self.wallet.address(),
+            maker: self.account.address(),
+            signer: self.account.address(),
             taker: alloy::primitives::Address::ZERO,
             token_id: params.token_id.clone(),
             maker_amount,
@@ -120,20 +127,15 @@ impl Clob {
 
     /// Sign an order
     pub async fn sign_order(&self, order: &Order) -> Result<SignedOrder> {
-        let signature = sign_order(order, self.wallet.signer(), self.chain_id).await?;
-
-        Ok(SignedOrder {
-            order: order.clone(),
-            signature,
-        })
+        self.account.sign_order(order, self.chain_id).await
     }
 
     /// Post a signed order
     pub async fn post_order(&self, signed_order: &SignedOrder) -> Result<OrderResponse> {
         let auth = AuthMode::L2 {
-            address: self.wallet.address(),
-            credentials: self.credentials.clone(),
-            signer: self.signer.clone(),
+            address: self.account.address(),
+            credentials: self.account.credentials().clone(),
+            signer: self.account.signer().clone(),
         };
 
         Request::post(
@@ -193,20 +195,18 @@ pub struct ClobBuilder {
     timeout_ms: u64,
     pool_size: usize,
     chain: Chain,
-    wallet: Wallet,
-    credentials: Credentials,
+    account: Account,
 }
 
 impl ClobBuilder {
-    /// Create a new builder with required wallet and credentials
-    pub fn new(wallet: Wallet, credentials: Credentials) -> Self {
+    /// Create a new builder with an Account
+    pub fn new(account: Account) -> Self {
         Self {
             base_url: DEFAULT_BASE_URL.to_string(),
             timeout_ms: DEFAULT_TIMEOUT_MS,
             pool_size: DEFAULT_POOL_SIZE,
             chain: Chain::PolygonMainnet,
-            wallet,
-            credentials,
+            account,
         }
     }
 
@@ -243,16 +243,11 @@ impl ClobBuilder {
 
         let base_url = Url::parse(&self.base_url)?;
 
-        // Build L2 signer from credentials
-        let signer = Signer::new(&self.credentials.secret)?;
-
         Ok(Clob {
             client,
             base_url,
             chain_id: self.chain.chain_id(),
-            wallet: self.wallet,
-            credentials: self.credentials,
-            signer,
+            account: self.account,
         })
     }
 }

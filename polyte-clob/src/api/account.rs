@@ -5,15 +5,14 @@ use serde::{Deserialize, Serialize};
 use url::Url;
 
 use crate::{
+    account::{Credentials, Signer, Wallet},
     request::{AuthMode, Request},
-    signer::Signer,
-    types::{Credentials, OrderSide},
-    wallet::Wallet,
+    types::OrderSide,
 };
 
-/// Account namespace for account-related operations
+/// Account API namespace for account-related operations
 #[derive(Clone)]
-pub struct Account {
+pub struct AccountApi {
     pub(crate) client: Client,
     pub(crate) base_url: Url,
     pub(crate) wallet: Wallet,
@@ -22,7 +21,7 @@ pub struct Account {
     pub(crate) chain_id: u64,
 }
 
-impl Account {
+impl AccountApi {
     /// Get balance and allowance for a token
     pub fn balance_allowance(
         &self,

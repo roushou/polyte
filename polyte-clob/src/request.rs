@@ -7,11 +7,9 @@ use serde::de::DeserializeOwned;
 use url::Url;
 
 use crate::{
+    account::{Credentials, Signer, Wallet},
     error::{ClobError, Result},
-    signer::Signer,
-    types::Credentials,
     utils::current_timestamp,
-    wallet::Wallet,
 };
 
 /// Authentication mode for requests

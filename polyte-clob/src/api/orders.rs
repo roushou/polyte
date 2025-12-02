@@ -3,11 +3,10 @@ use serde::{Deserialize, Serialize};
 use url::Url;
 
 use crate::{
+    account::{Credentials, Signer, Wallet},
     error::Result,
     request::{AuthMode, Request},
-    signer::Signer,
-    types::{Credentials, SignedOrder},
-    wallet::Wallet,
+    types::SignedOrder,
 };
 
 /// Orders namespace for order-related operations
