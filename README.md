@@ -9,7 +9,7 @@ Rust SDK toolkit for Polymarket APIs. It includes library crates for use in your
 
 | Crate | Description |
 |-------|-------------|
-| [polyte](./polyte) | Unified client for Polymarket APIs (CLOB, Gamma, Data) |
+| [polyte](./polyte) | Unified client for Polymarket APIs (CLOB, Gamma, Data, WebSocket) |
 | [polyte-cli](./polyte-cli) | CLI tool for querying Polymarket APIs |
 | [polyte-clob](./polyte-clob) | Client library for Polymarket CLOB (order book) API |
 | [polyte-core](./polyte-core) | Core utilities and shared types |
@@ -35,6 +35,9 @@ cargo add polyte --no-default-features --features clob
 
 # Data API only
 cargo add polyte --no-default-features --features data
+
+# WebSocket only
+cargo add polyte --no-default-features --features ws
 ```
 
 ### CLI
@@ -55,6 +58,8 @@ See more information [here](./polyte-cli/README.md).
 
 ## Usage
 
+### REST API
+
 ```rust
 use polyte::prelude::*;
 
@@ -72,6 +77,35 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Get balance
     let balance = client.clob.balance_allowance().await?;
+
+    Ok(())
+}
+```
+
+### WebSocket
+
+```rust
+use polyte::prelude::*;
+use futures_util::StreamExt;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Connect to market channel (no auth required)
+    let mut ws = ws::WebSocket::connect_market(vec![
+        "token_id".to_string(),
+    ]).await?;
+
+    while let Some(msg) = ws.next().await {
+        match msg? {
+            ws::Channel::Market(ws::MarketMessage::Book(book)) => {
+                println!("Order book: {} bids, {} asks", book.bids.len(), book.asks.len());
+            }
+            ws::Channel::Market(ws::MarketMessage::PriceChange(pc)) => {
+                println!("Price change: {:?}", pc.price_changes);
+            }
+            _ => {}
+        }
+    }
 
     Ok(())
 }

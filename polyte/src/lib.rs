@@ -79,6 +79,9 @@ pub mod prelude {
 
     #[cfg(feature = "gamma")]
     pub use polyte_gamma::{Gamma, GammaError};
+
+    #[cfg(feature = "ws")]
+    pub use polyte_clob::ws;
 }
 
 /// Error types for Polymarket operations

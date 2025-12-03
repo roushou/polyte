@@ -11,6 +11,7 @@ More information about this crate can be found in the [crate documentation](http
 - **Account Management**: Check balances, allowances, and trade history
 - **Order Management**: List and cancel orders
 - **Market Data**: Get order books, prices, and market information
+- **WebSocket**: Real-time market data and user order/trade updates
 
 ## Installation
 
@@ -83,6 +84,95 @@ if response.success {
     println!("Order placed: {:?}", response.order_id);
 } else {
     eprintln!("Order failed: {:?}", response.error_msg);
+}
+```
+
+### WebSocket
+
+#### Market Channel
+
+Subscribe to real-time order book and price updates (no authentication required):
+
+```rust
+use polyte_clob::ws::{WebSocket, Channel, MarketMessage};
+use futures_util::StreamExt;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut ws = WebSocket::connect_market(vec![
+        "asset_id".to_string(),
+    ]).await?;
+
+    while let Some(msg) = ws.next().await {
+        match msg? {
+            Channel::Market(MarketMessage::Book(book)) => {
+                println!("Order book: {} bids, {} asks", book.bids.len(), book.asks.len());
+            }
+            Channel::Market(MarketMessage::PriceChange(pc)) => {
+                println!("Price change: {:?}", pc.price_changes);
+            }
+            _ => {}
+        }
+    }
+
+    Ok(())
+}
+```
+
+#### User Channel
+
+Subscribe to authenticated order and trade updates:
+
+```rust
+use polyte_clob::ws::{ApiCredentials, WebSocket, Channel, UserMessage};
+use futures_util::StreamExt;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let credentials = ApiCredentials::from_env()?;
+
+    let mut ws = WebSocket::connect_user(
+        vec!["condition_id".to_string()],
+        credentials,
+    ).await?;
+
+    while let Some(msg) = ws.next().await {
+        match msg? {
+            Channel::User(UserMessage::Order(order)) => {
+                println!("Order update: {} {:?}", order.id, order.order_type);
+            }
+            Channel::User(UserMessage::Trade(trade)) => {
+                println!("Trade: {} @ {}", trade.size, trade.price);
+            }
+            _ => {}
+        }
+    }
+
+    Ok(())
+}
+```
+
+#### Auto-Ping with WebSocketBuilder
+
+For long-running connections with automatic keep-alive:
+
+```rust
+use polyte_clob::ws::{WebSocketBuilder, Channel};
+use std::time::Duration;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let ws = WebSocketBuilder::new()
+        .ping_interval(Duration::from_secs(10))
+        .connect_market(vec!["asset_id".to_string()])
+        .await?;
+
+    ws.run(|msg| async move {
+        println!("Received: {:?}", msg);
+        Ok(())
+    }).await?;
+
+    Ok(())
 }
 ```
 

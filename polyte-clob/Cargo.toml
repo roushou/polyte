@@ -1,6 +1,6 @@
 [package]
 name = "polyte-clob"
-version = "0.1.8"
+version = "0.2.0"
 edition.workspace = true
 license.workspace = true
 authors.workspace = true
@@ -11,7 +11,8 @@ keywords = ["polymarket", "prediction-markets", "trading", "clob"]
 categories = ["api-bindings", "web-programming::http-client"]
 
 [features]
-default = []
+default = ["ws"]
+ws = ["dep:tokio-tungstenite", "dep:futures-util"]
 
 [dependencies]
 alloy = { version = "1.1.2", features = [
@@ -38,7 +39,11 @@ hex = { workspace = true }
 anyhow = { workspace = true }
 rand = { version = "0.9.2", features = ["std"] }
 urlencoding = "2.1"
+tokio-tungstenite = { workspace = true, optional = true }
+futures-util = { workspace = true, optional = true }
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+polyte-gamma = { path = "../polyte-gamma" }
+futures-util = { workspace = true }

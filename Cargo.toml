@@ -10,7 +10,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.2.6"
+version = "0.3.0"
 edition = "2021"
 license = "MIT"
 authors = ["Kenji Lau <hello@kenji.sh>"]
@@ -31,6 +31,8 @@ chrono = "0.4"
 url = "2.5"
 hex = "0.4"
 tracing = "0.1"
+tokio-tungstenite = { version = "0.26", features = ["rustls-tls-webpki-roots"] }
+futures-util = "0.3"
 
 [profile.release]
 opt-level = 3

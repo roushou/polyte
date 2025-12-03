@@ -50,6 +50,9 @@ pub mod request;
 pub mod types;
 pub mod utils;
 
+#[cfg(feature = "ws")]
+pub mod ws;
+
 pub use account::{Account, AccountConfig, Credentials, Signer, Wallet};
 pub use api::account::{BalanceAllowanceResponse, Trade};
 pub use api::markets::{
