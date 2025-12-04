@@ -54,7 +54,7 @@ impl TradesCommand {
                     let mut request = data
                         .positions(&u)
                         .trades()
-                        .limit(100)
+                        .limit(limit)
                         .offset(offset)
                         .taker_only(taker_only);
 
