@@ -52,36 +52,32 @@
 //! }
 //! ```
 
-#[cfg(all(feature = "clob", feature = "gamma"))]
-use polyte_clob::{Account, Chain, Clob, ClobBuilder};
-#[cfg(all(feature = "clob", feature = "gamma"))]
-use polyte_gamma::Gamma;
-
 #[cfg(feature = "clob")]
 pub use polyte_clob;
+#[cfg(all(feature = "clob", feature = "gamma"))]
+use polyte_clob::{Account, Chain, Clob, ClobBuilder};
 #[cfg(feature = "data")]
 pub use polyte_data;
 #[cfg(feature = "gamma")]
 pub use polyte_gamma;
+#[cfg(all(feature = "clob", feature = "gamma"))]
+use polyte_gamma::Gamma;
 
 /// Prelude module for convenient imports
 pub mod prelude {
-    #[cfg(all(feature = "clob", feature = "gamma", feature = "data"))]
-    pub use crate::{Polymarket, PolymarketBuilder, PolymarketError};
-
+    #[cfg(feature = "ws")]
+    pub use polyte_clob::ws;
     #[cfg(feature = "clob")]
     pub use polyte_clob::{
         Account, Chain, Clob, ClobBuilder, ClobError, CreateOrderParams, Credentials, OrderSide,
     };
-
     #[cfg(feature = "data")]
     pub use polyte_data::{DataApi, DataApiError};
-
     #[cfg(feature = "gamma")]
     pub use polyte_gamma::{Gamma, GammaError};
 
-    #[cfg(feature = "ws")]
-    pub use polyte_clob::ws;
+    #[cfg(all(feature = "clob", feature = "gamma", feature = "data"))]
+    pub use crate::{Polymarket, PolymarketBuilder, PolymarketError};
 }
 
 /// Error types for Polymarket operations

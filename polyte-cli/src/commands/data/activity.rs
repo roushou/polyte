@@ -2,9 +2,8 @@ use clap::{Args, ValueEnum};
 use color_eyre::eyre::Result;
 use polyte_data::{types::ActivityType, DataApi};
 
-use crate::commands::data::trades::TradeSideFilter;
-
 use super::SortOrder;
+use crate::commands::data::trades::TradeSideFilter;
 
 #[derive(Args)]
 pub struct UserActivityCommand {

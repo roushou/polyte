@@ -10,9 +10,8 @@ mod wallet;
 use std::path::Path;
 
 use alloy::primitives::Address;
-use serde::{Deserialize, Serialize};
-
 pub use credentials::Credentials;
+use serde::{Deserialize, Serialize};
 pub use signer::Signer;
 pub use wallet::Wallet;
 

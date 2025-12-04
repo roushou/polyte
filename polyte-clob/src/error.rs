@@ -1,6 +1,5 @@
-use thiserror::Error;
-
 use polyte_core::ApiError;
+use thiserror::Error;
 
 /// Result type for CLOB operations
 pub type Result<T> = std::result::Result<T, ClobError>;

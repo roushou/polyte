@@ -53,14 +53,17 @@ pub mod utils;
 #[cfg(feature = "ws")]
 pub mod ws;
 
-pub use account::{Account, AccountConfig, Credentials, Signer, Wallet};
-pub use api::account::{BalanceAllowanceResponse, Trade};
-pub use api::markets::{
-    ListMarketsResponse, Market, MarketToken, MidpointResponse, OrderBook, OrderLevel,
-    PriceResponse,
-};
-pub use api::orders::{CancelResponse, OpenOrder, OrderResponse};
-pub use client::{Clob, ClobBuilder, CreateOrderParams};
 pub use core::chain::{Chain, Contracts};
+
+pub use account::{Account, AccountConfig, Credentials, Signer, Wallet};
+pub use api::{
+    account::{BalanceAllowanceResponse, Trade},
+    markets::{
+        ListMarketsResponse, Market, MarketToken, MidpointResponse, OrderBook, OrderLevel,
+        PriceResponse,
+    },
+    orders::{CancelResponse, OpenOrder, OrderResponse},
+};
+pub use client::{Clob, ClobBuilder, CreateOrderParams};
 pub use error::{ClobError, Result};
 pub use types::{Order, OrderKind, OrderSide, SignatureType, SignedOrder, TickSize};

@@ -2,9 +2,8 @@ use clap::{Args, Subcommand, ValueEnum};
 use color_eyre::eyre::Result;
 use polyte_data::DataApi;
 
-use crate::commands::data::trades::TradeSideFilter;
-
 use super::SortOrder;
+use crate::commands::data::trades::TradeSideFilter;
 
 #[derive(Args)]
 pub struct PositionsCommand {
