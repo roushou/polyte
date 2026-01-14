@@ -43,7 +43,8 @@ pub struct Market {
     pub sponsor_image: Option<String>,
     pub x_axis_value: Option<String>,
     pub y_axis_value: Option<String>,
-    pub denomation_token: Option<String>,
+    #[serde(rename = "denomationToken")]
+    pub denomination_token: Option<String>,
     pub fee: Option<String>,
     pub image: Option<String>,
     pub icon: Option<String>,
@@ -232,7 +233,8 @@ pub struct Event {
     pub show_all_outcomes: Option<bool>,
     pub show_market_images: Option<bool>,
     pub automatically_resolved: Option<bool>,
-    pub enalbe_neg_risk: Option<bool>,
+    #[serde(rename = "enalbeNegRisk")]
+    pub enable_neg_risk: Option<bool>,
     pub automatically_active: Option<bool>,
     pub event_date: Option<String>,
     pub start_time: Option<String>,
