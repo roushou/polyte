@@ -1,5 +1,4 @@
-use std::time::Duration;
-
+use polyte_core::{HttpClient, HttpClientBuilder, DEFAULT_POOL_SIZE, DEFAULT_TIMEOUT_MS};
 use reqwest::Client;
 use url::Url;
 
@@ -14,8 +13,6 @@ use crate::{
 };
 
 const DEFAULT_BASE_URL: &str = "https://clob.polymarket.com";
-const DEFAULT_TIMEOUT_MS: u64 = 30_000;
-const DEFAULT_POOL_SIZE: usize = 10;
 
 #[derive(Clone)]
 pub struct Clob {
@@ -236,12 +233,10 @@ impl ClobBuilder {
 
     /// Build the CLOB client
     pub fn build(self) -> Result<Clob> {
-        let client = Client::builder()
-            .timeout(Duration::from_millis(self.timeout_ms))
-            .pool_max_idle_per_host(self.pool_size)
+        let HttpClient { client, base_url } = HttpClientBuilder::new(&self.base_url)
+            .timeout_ms(self.timeout_ms)
+            .pool_size(self.pool_size)
             .build()?;
-
-        let base_url = Url::parse(&self.base_url)?;
 
         Ok(Clob {
             client,
