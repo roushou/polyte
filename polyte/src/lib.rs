@@ -27,7 +27,7 @@
 //!     // Use Gamma API to list markets
 //!     let markets = polymarket.gamma.markets()
 //!         .list()
-//!         .active(true)
+//!         .open(true)
 //!         .limit(10)
 //!         .send()
 //!         .await?;

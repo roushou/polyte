@@ -40,7 +40,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // List active markets
     let markets = gamma.markets()
         .list()
-        .active(true)
+        .open(true)
         .limit(10)
         .send()
         .await?;
@@ -71,7 +71,7 @@ println!("Liquidity: {}", market.liquidity);
 ```rust
 let series = gamma.series()
     .list()
-    .active(true)
+    .open(true)
     .send()
     .await?;
 

@@ -24,7 +24,7 @@
 //!     // List active markets with fluent builder pattern
 //!     let markets = gamma.markets()
 //!         .list()
-//!         .active(true)
+//!         .open(true)
 //!         .limit(10)
 //!         .send()
 //!         .await?;
