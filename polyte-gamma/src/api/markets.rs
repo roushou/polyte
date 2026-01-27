@@ -209,9 +209,9 @@ impl ListMarkets {
         self
     }
 
-    /// Filter by active status (convenience method, opposite of closed)
-    pub fn active(mut self, active: bool) -> Self {
-        self.request = self.request.query("closed", !active);
+    /// Filter by open status (convenience method, opposite of closed)
+    pub fn open(mut self, open: bool) -> Self {
+        self.request = self.request.query("closed", !open);
         self
     }
 

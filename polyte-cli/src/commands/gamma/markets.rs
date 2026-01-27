@@ -102,29 +102,29 @@ impl MarketsCommand {
                 // Apply preset filters first (can be overridden by explicit flags)
                 request = match preset {
                     Some(MarketPreset::Trending) => request
-                        .active(true)
+                        .open(true)
                         .volume_num_min(100_000.0)
                         .order("volume24hr")
                         .ascending(false),
                     Some(MarketPreset::TopVolume) => {
-                        request.active(true).order("volume").ascending(false)
+                        request.open(true).order("volume").ascending(false)
                     }
                     Some(MarketPreset::HighLiquidity) => request
-                        .active(true)
+                        .open(true)
                         .liquidity_num_min(50_000.0)
                         .order("liquidity")
                         .ascending(false),
                     Some(MarketPreset::New) => {
-                        request.active(true).order("startDate").ascending(false)
+                        request.open(true).order("startDate").ascending(false)
                     }
                     Some(MarketPreset::Competitive) => {
-                        request.active(true).order("competitive").ascending(false)
+                        request.open(true).order("competitive").ascending(false)
                     }
                     None => request,
                 };
 
                 // Apply explicit overrides (these take precedence over presets)
-                request = request.limit(limit).offset(offset).active(active);
+                request = request.limit(limit).offset(offset).open(active);
                 match status {
                     MarketStatus::Open => {
                         request = request.closed(false).archived(false);
